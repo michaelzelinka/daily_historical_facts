@@ -6,9 +6,11 @@ import requests
 FACT_FILE = "facts.txt"
 SENT_FILE = "sent.json"
 
+
 def load_facts():
     with open(FACT_FILE, "r", encoding="utf-8") as f:
         return [line.strip() for line in f if line.strip()]
+
 
 def load_sent():
     if not os.path.exists(SENT_FILE):
@@ -19,16 +21,21 @@ def load_sent():
         except:
             return []
 
+
 def save_sent(sent):
     with open(SENT_FILE, "w", encoding="utf-8") as f:
         json.dump(sent, f, ensure_ascii=False, indent=2)
 
+
 def send_discord_message(msg):
-    webhook = os.getenv("DISCORD_HISTORICAL_FACTS")
+    webhook = os.getenv("DISCORD_WEBHOOK")
     if not webhook:
-        print("❌ Missing DISCORD_HISTORICAL_FACTS")
+        print("❌ Missing DISCORD_WEBHOOK")
         return
-    requests.post(webhook, json={"content": msg})
+
+    resp = requests.post(webhook, json={"content": msg})
+    print("✅ Discord status:", resp.status_code)
+
 
 if __name__ == "__main__":
     facts = load_facts()
@@ -37,18 +44,14 @@ if __name__ == "__main__":
     available = [f for f in facts if f not in sent]
 
     if not available:
-        send_discord_message("✅ Všechna fakta již byla odeslána! Přidej prosím nové 😊")
+        send_discord_message("✅ All facts have been sent! Please add more 😊")
         exit(0)
 
     fact = random.choice(available)
+    message = f"📜 **Daily historical fact:**\n{fact}"
 
-    send_discord_message(f"📜 **Dnešní fakt:**\n{fact}")
+    send_discord_message(message)
 
     sent.append(fact)
     save_sent(sent)
-
-    
-resp = requests.post(DISCORD_HISTORICAL_FACTS, json={"content": msg})
-print("Discord status:", resp.status_code)
-print("Message sent:", repr(msg))
-
+``
