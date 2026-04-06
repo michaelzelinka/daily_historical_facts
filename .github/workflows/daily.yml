@@ -22,7 +22,7 @@ jobs:
 
       - name: Run script
         env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK}}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_HISTORICAL_FACTS}}
         run: python send_fact.py
 
       - name: Commit updated sent facts
