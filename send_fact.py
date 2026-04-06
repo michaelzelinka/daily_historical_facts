@@ -54,4 +54,3 @@ if __name__ == "__main__":
 
     sent.append(fact)
     save_sent(sent)
-``
