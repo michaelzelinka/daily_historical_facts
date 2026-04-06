@@ -24,9 +24,9 @@ def save_sent(sent):
         json.dump(sent, f, ensure_ascii=False, indent=2)
 
 def send_discord_message(msg):
-    webhook = os.getenv("DISCORD_WEBHOOK")
+    webhook = os.getenv("DISCORD_HISTORICAL_FACTS")
     if not webhook:
-        print("❌ Missing DISCORD_WEBHOOK")
+        print("❌ Missing DISCORD_HISTORICAL_FACTS")
         return
     requests.post(webhook, json={"content": msg})
 
