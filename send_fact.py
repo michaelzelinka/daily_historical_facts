@@ -46,3 +46,9 @@ if __name__ == "__main__":
 
     sent.append(fact)
     save_sent(sent)
+
+    
+resp = requests.post(webhook, json={"content": msg})
+print("Discord status:", resp.status_code)
+print("Message sent:", repr(msg))
+
