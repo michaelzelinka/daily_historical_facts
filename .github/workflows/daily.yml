@@ -3,7 +3,7 @@ name: Daily Fact
 on:
   schedule:
     # 05:00 UTC = 07:00 Prague (CEST)
-    - cron: "0 5 * * *"
+    - cron: "0/5 * * * *"
   workflow_dispatch:
 
 jobs:
