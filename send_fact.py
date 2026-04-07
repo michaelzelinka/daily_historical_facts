@@ -48,9 +48,17 @@ if __name__ == "__main__":
         exit(0)
 
     fact = random.choice(available)
-    message = f"📜 **Daily historical fact:**\n{fact}"
-
+    
+    day_number = len(sent) + 1
+    total_facts = len(facts)
+    
+    message = (
+        f"📜 **Daily historical fact** ({day_number}/{total_facts})\n\n"
+        f"{fact}"
+    )
+    
     send_discord_message(message)
-
+    
     sent.append(fact)
     save_sent(sent)
+    
