@@ -2,7 +2,8 @@ name: Daily Fact
 
 on:
   schedule:
-    - cron: "*/1 * * * *"
+    # 05:00 UTC = 07:00 Prague (CEST)
+    - cron: "0 5 * * *"
   workflow_dispatch:
 
 jobs:
@@ -10,26 +11,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # 1️⃣ Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      # 2️⃣ Setup Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: pip install requests
 
-      - name: Run script
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_HISTORICAL_FACTS }}
-        run: python send_fact.py
-
-      - name: Commit updated sent facts
+      # 4️⃣ Git config + sync repository FIRST
+      - name: Sync repository
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git pull --rebase origin main
+
+      # 5️⃣ Run the Python script (writes sent.json)
+      - name: Run daily fact script
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_HISTORICAL_FACTS }}
+        run: python send_fact.py
+
+      # 6️⃣ Commit and push updated sent.json
+      - name: Commit updated sent facts
+        run: |
           git add sent.json
-          git commit -m "Update sent facts" || echo "No changes"
+          git commit -m "Update sent facts" || echo "No changes to commit"
           git push
